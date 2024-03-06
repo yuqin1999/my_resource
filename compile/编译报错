@@ -1,0 +1,14 @@
+一、缺少netlink.h
+问题：
+In file included from ./t/lwCtrlIfmInterfaceManagerT.c:3:0:
+/home/code/agent/cpe-agent/src/../../../librtc/librtc/lightwanRtcLibnl.h:25:29: 致命错误：netlink/netlink.h：没有那个文件或目录
+ #include <netlink/netlink.h>
+                             ^
+编译中断。
+make: *** [autoTest] 错误 1
+
+
+解决：
+centos设备：
+yum whatprovides 致命错误：netlink.h
+

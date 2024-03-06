@@ -1,0 +1,39 @@
+一 背景：
+两个仓库，kernel仓存储内核源码，另一给仓主要是build
+drwxr-xr-x 20 root root    4096 2月  29 16:36 lw2303v2_openwrt  build仓
+drwxr-xr-x 28 root root    4096 2月  29 15:16 lw2303v2_openwrt_kernel  kernel仓
+
+二 编译步骤
+1.在kernel仓中修改代码，然后提交到分支
+2.build仓中make menuconfig选择组件，类似CONFIG_PACKAGE_kmod-usb-net-qmi-wwan-q=y  【注意】一定=y而不是m，否则带不到固件中
+3.build仓中make kernel_menuconfig选择组件，类似CONFIG_USB_SERIAL_WWAN=m
+4.build仓中make V=99（最好不要-jx，容易编译失败）
+
+
+三 报错<asm/types.h>
+A_FLOW_URL_AUDIT -D LW_DATAPATH_FEA_FLOW_AUDIT -D LW_DATAPATH_FEA_FULL_CONFIG -D LW_DATAPATH_FEA_NETWORK_SLICING -D LW_DATAPATH_FEA_FILESYSTEM_CHECK -D LW_DATAPATH_FEA_IP_MAC_FILTER -D LW_DATAPATH_FEA_LOOPBACK -DLW_DATAPATH_KERNEL_MODE"
+make[1]: 进入目录“/home/code/lw2303v2_openwrt_kernel”
+  CC [M]  /home/code/LWConn/build/lw_exp_flow.o
+In file included from ./include/linux/types.h:6:0,
+                 from ./include/linux/kernel.h:9,
+                 from /home/code/LWConn/../psbc/linux-kern/common/lightwanPlatformDefs.h:21,
+                 from /home/code/LWConn/../psbc/include/lightwanDefs.h:22,
+                 from /home/code/LWConn/../psbc/include/lightwanLogModId.h:10,
+                 from /home/code/LWConn/lw_datapath_loginfo.h:4,
+                 from /home/code/LWConn/lw_exp_flow.c:21:
+./include/uapi/linux/types.h:5:10: fatal error: asm/types.h: No such file or directory
+ #include <asm/types.h>
+          ^~~~~~~~~~~~~
+compilation terminated.
+make[2]: *** [/home/code/LWConn/build/lw_exp_flow.o] 错误 1
+make[1]: *** [_module_/home/code/LWConn/build] 错误 2
+make[1]: 离开目录“/home/code/lw2303v2_openwrt_kernel”
+make: *** [buildKo] 错误 2
+[root@localhost LWConn]# 
+
+
+解决：
+由于make menuconfig不对导致，不要在kernel仓中make menuconfig,在build仓中进行
+
+四 对于.config混乱
+将自己组件的内容手动添加，其他内容不修改即可
